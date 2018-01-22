@@ -8,6 +8,10 @@
 
 /* Begin PBXBuildFile section */
 		68C7417F200BF43300D3347A /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 68C7417E200BF43300D3347A /* main.cpp */; };
+		68E5B76E20167DD100C1C764 /* poisson_experiment.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 68E5B76C20167DD100C1C764 /* poisson_experiment.cpp */; };
+		68E5B7722016821600C1C764 /* color_distribution.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 68E5B7702016821600C1C764 /* color_distribution.cpp */; };
+		68E5B775201682CA00C1C764 /* statistics_ensemble_populations.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 68E5B773201682CA00C1C764 /* statistics_ensemble_populations.cpp */; };
+		68E5B778201683CC00C1C764 /* population.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 68E5B776201683CC00C1C764 /* population.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -25,6 +29,15 @@
 /* Begin PBXFileReference section */
 		68C7417B200BF43300D3347A /* NonFixedPopulationDynamics */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = NonFixedPopulationDynamics; sourceTree = BUILT_PRODUCTS_DIR; };
 		68C7417E200BF43300D3347A /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
+		68E5B76C20167DD100C1C764 /* poisson_experiment.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = poisson_experiment.cpp; sourceTree = "<group>"; };
+		68E5B76D20167DD100C1C764 /* poisson_experiment.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = poisson_experiment.h; sourceTree = "<group>"; };
+		68E5B76F2016817500C1C764 /* strategies.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = strategies.h; sourceTree = "<group>"; };
+		68E5B7702016821600C1C764 /* color_distribution.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = color_distribution.cpp; sourceTree = "<group>"; };
+		68E5B7712016821600C1C764 /* color_distribution.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = color_distribution.h; sourceTree = "<group>"; };
+		68E5B773201682CA00C1C764 /* statistics_ensemble_populations.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = statistics_ensemble_populations.cpp; sourceTree = "<group>"; };
+		68E5B774201682CA00C1C764 /* statistics_ensemble_populations.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = statistics_ensemble_populations.h; sourceTree = "<group>"; };
+		68E5B776201683CC00C1C764 /* population.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = population.cpp; sourceTree = "<group>"; };
+		68E5B777201683CC00C1C764 /* population.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = population.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -57,7 +70,16 @@
 		68C7417D200BF43300D3347A /* NonFixedPopulationDynamics */ = {
 			isa = PBXGroup;
 			children = (
+				68E5B776201683CC00C1C764 /* population.cpp */,
+				68E5B777201683CC00C1C764 /* population.h */,
+				68E5B773201682CA00C1C764 /* statistics_ensemble_populations.cpp */,
+				68E5B774201682CA00C1C764 /* statistics_ensemble_populations.h */,
+				68E5B7702016821600C1C764 /* color_distribution.cpp */,
+				68E5B7712016821600C1C764 /* color_distribution.h */,
+				68E5B76C20167DD100C1C764 /* poisson_experiment.cpp */,
+				68E5B76D20167DD100C1C764 /* poisson_experiment.h */,
 				68C7417E200BF43300D3347A /* main.cpp */,
+				68E5B76F2016817500C1C764 /* strategies.h */,
 			);
 			path = NonFixedPopulationDynamics;
 			sourceTree = "<group>";
@@ -118,6 +140,10 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				68E5B778201683CC00C1C764 /* population.cpp in Sources */,
+				68E5B76E20167DD100C1C764 /* poisson_experiment.cpp in Sources */,
+				68E5B7722016821600C1C764 /* color_distribution.cpp in Sources */,
+				68E5B775201682CA00C1C764 /* statistics_ensemble_populations.cpp in Sources */,
 				68C7417F200BF43300D3347A /* main.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -235,6 +261,7 @@
 				68C74184200BF43300D3347A /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
