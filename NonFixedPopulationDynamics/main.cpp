@@ -12,15 +12,15 @@
 int main(int argc, const char * argv[]) {
     
     /* initialize random seed: */
-    srand (time(NULL));
+    srand (static_cast<unsigned int>(time(NULL)));
     int N0 = 1000;
-    int T = 2000;
+    int T = 20000;
     Strategy strategy = Strategy::LinearGrowing;//  LinearGrowing;
     //single run case:
     //StatisticsEnsemblePopulations statistics =
     //StatisticsEnsemblePopulations(strategy, N0, T, 1, true);
     //statistics.RunSimulation(false);
-    int iterations = 2;
+    //int iterations = 2;
     //StatisticsEnsemblePopulations statistics =
     //StatisticsEnsemblePopulations(strategy, N0, T, iterations);
     //statistics.RunSimulation();
