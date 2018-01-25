@@ -36,8 +36,7 @@ struct PoissonExperiment{
             PrintState(t/*, threshold*/);
         }
     }
-private:
-    void PrintState(int t/*, float threshold*/){
+    void PrintState(int t, bool print_details = false, float correction = 0.0){
         
         std::cout << t << "\t" << std::accumulate(state.begin(), state.end(), 0.0,
                                                 [](float acc,
@@ -51,38 +50,37 @@ private:
                            const std::pair<float, int>& l
                            )
                         { return l.first+acc;
-                        }) << "\t";
+                        })+correction << "\t";
         
-        std::cout << std::endl;
-        //std::reverse(state.begin(), state.end());
-        /*
-        std::vector<std::pair<float, int>> filtered_states;
-        filtered_states.resize(state.size(), std::make_pair(0.0,0));
-        
-        // copy only numbers above given threshold:
-        auto it = std::copy_if (state.begin(), state.end(),
-                                filtered_states.begin(),
-                                [threshold](const std::pair<float, int>& pair)
-                                {return pair.first>threshold;} );
-        filtered_states.resize(std::distance(filtered_states.begin(),it));  // shrink container to new size
-        
-        //alternatively:
-        //filtered_states.resize(10, std::make_pair(0.0,0));
-        //std::partial_sort_copy(state.begin(), state.end(),
-        //                       filtered_states.begin(),
-        //                       filtered_states.end(),
-        //                       [](const std::pair<float, int>& l,
-        //                          const std::pair<float, int>& r){
-        //                           return l.first > r.first;
-        //                      });
-        //std::reverse(filtered_states.begin(), filtered_states.end());
-        //std::cout << t << "\t";
-        for(const std::pair<float, int>& pair : filtered_states){
-            std::cout << pair.first << ":" << pair.second << "\t";
+        if(print_details){
+            std::vector<std::pair<float, int>> filtered_states;
+            filtered_states.resize(state.size(), std::make_pair(0.0,0));
+            float threshold = 0.5;
+            // copy only numbers above given threshold:
+            auto it = std::copy_if (state.begin(), state.end(),
+                                    filtered_states.begin(),
+                                    [threshold](const std::pair<float, int>& pair)
+                                    {return pair.first>threshold;} );
+            filtered_states.resize(std::distance(filtered_states.begin(),it));  // shrink container to new size
+            
+            //alternatively:
+            //filtered_states.resize(10, std::make_pair(0.0,0));
+            //std::partial_sort_copy(state.begin(), state.end(),
+            //                       filtered_states.begin(),
+            //                       filtered_states.end(),
+            //                       [](const std::pair<float, int>& l,
+            //                          const std::pair<float, int>& r){
+            //                           return l.first > r.first;
+            //                      });
+            //std::reverse(filtered_states.begin(), filtered_states.end());
+            //std::cout << t << "\t";
+            for(const std::pair<float, int>& pair : filtered_states){
+                std::cout << pair.first << ":" << pair.second << "\t";
+            }
+            std::cout << std::endl;
+            filtered_states.erase(filtered_states.begin(),filtered_states.end());
+            filtered_states.clear();
         }
-        std::cout << std::endl;
-        filtered_states.erase(filtered_states.begin(),filtered_states.end());
-        filtered_states.clear();*/
     }
     void IterateExperiment(int t){
         //std::vector<std::pair<int, int>> new_state;
@@ -101,19 +99,25 @@ private:
         }
         //std::vector<int> state_values;//, unique_values;
         std::vector<float> generated_values;
-        generated_values.resize(n+std::ceil(3*sqrt(n))+1,0.0);
+        float std_multiplier = 6.0;
+        generated_values.resize(n+std::ceil(std_multiplier*sqrt(n))+1,0.0);
         for(auto &pair : state){
-            float lambda = std::min<float>( static_cast<float>(n),
-                                    pair.second * n/static_cast<float>(last_n_));
-            std::vector<int> state_values;
-            int state_values_length = std::ceil(6*sqrt(lambda)+1);
-            state_values.resize(state_values_length);
-            std::iota(state_values.begin(), state_values.end(),
-                      std::max(1.0,lambda - std::ceil(3*sqrt(lambda))));
-            for( auto &state_value : state_values){
-                float weighted_probability =
-                PoissonPmf(state_value, lambda) * pair.first;
-                generated_values[state_value] += weighted_probability;
+            if(pair.second<last_n_){
+                float lambda = std::min<float>( static_cast<float>(n),
+                                               pair.second * n/static_cast<float>(last_n_));
+                std::vector<int> state_values;
+                int state_values_length = std::ceil(2*std_multiplier*sqrt(lambda)+1);
+                state_values.resize(state_values_length);
+                std::iota(state_values.begin(), state_values.end(),
+                          std::max(1.0,lambda - std::ceil(std_multiplier*sqrt(lambda))));
+                for( auto &state_value : state_values){
+                    float weighted_probability =
+                    PoissonPmf(state_value, lambda) * pair.first;
+                    generated_values[std::min<int>(n,state_value)] += weighted_probability;
+                }
+            }
+            else{
+                generated_values[n] += pair.first;
             }
         }
         //state_values.clear();

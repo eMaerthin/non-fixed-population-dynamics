@@ -13,6 +13,7 @@
 #include <vector>
 
 #include "color_distribution.h"
+#include "poisson_experiment.h"
 #include "population.h"
 #include "strategies.h"
 
@@ -23,12 +24,15 @@ struct StatisticsEnsemblePopulations {
     int iterations;
     int current_iteration;
     bool print_state;
+    
+    PoissonExperiment experiment_;
     std::vector<float> avg_colors_per_timestamp;
     std::vector< std::vector<float> > avg_distribution_per_timestamp;
     StatisticsEnsemblePopulations(Strategy strategy, int N0, int T,
                                   int iterations, bool print_state=false):
     strategy_(strategy), N0_(N0), T_(T), iterations(iterations),
-    current_iteration(0), print_state(print_state){
+    current_iteration(0), print_state(print_state),
+    experiment_(PoissonExperiment(N0_,T_,strategy_)){
         avg_colors_per_timestamp.resize(T_+1);
         avg_distribution_per_timestamp.resize(T_+1);
         for(int t=0; t<=T_;t++){
@@ -45,14 +49,17 @@ struct StatisticsEnsemblePopulations {
             }
         }
     }
-    void RunSimulation(bool print_statistics = true){
+    void RunSimulation(bool print_statistics = true,
+                       bool run_poisson_experiment = false,
+                       bool print_details = false){
         for(current_iteration = 1; current_iteration <= iterations;
             current_iteration++){
-            std::cout << current_iteration << "\n";
+            std::cout << "Iteration" << current_iteration << "/" << iterations;
+            std::cout << "...\n";
             RunSingleRun(print_state);
         }
         if(print_statistics){
-            PrintStatistics();
+            PrintStatistics(run_poisson_experiment, print_details);
         }
     }
     void UpdateStatistics(Population population, int t){
@@ -69,11 +76,22 @@ struct StatisticsEnsemblePopulations {
             /static_cast<float>(current_iteration);
         }
     }
-    void PrintStatistics(){
+    void PrintStatistics(bool run_poisson_experiment, bool print_details){
         for(int t=0; t<=T_;t++){
-            std::cout << t << "\t" << avg_colors_per_timestamp[t];
-            for(int i=0; i<N0_; i++){
-                std::cout << "\t" << avg_distribution_per_timestamp[t][i];
+            if(run_poisson_experiment){
+                if(t>0){
+                    experiment_.IterateExperiment(t);
+                }
+                experiment_.PrintState(t, print_details);
+            }
+            else{
+                std::cout << t << "\t";
+            }
+            std::cout << avg_colors_per_timestamp[t];
+            if(print_details){
+                for(int i=0; i<N0_; i++){
+                    std::cout << "\t" << avg_distribution_per_timestamp[t][i];
+                }
             }
             std::cout << std::endl;
         }
