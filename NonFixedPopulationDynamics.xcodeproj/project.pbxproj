@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		68288F4D201F31A300E272FD /* strategy_interpreter.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 68288F4B201F31A300E272FD /* strategy_interpreter.cpp */; };
+		68288F50201F390900E272FD /* running_average.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 68288F4E201F390900E272FD /* running_average.cpp */; };
 		68C7417F200BF43300D3347A /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 68C7417E200BF43300D3347A /* main.cpp */; };
 		68E5B76E20167DD100C1C764 /* poisson_experiment.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 68E5B76C20167DD100C1C764 /* poisson_experiment.cpp */; };
 		68E5B7722016821600C1C764 /* color_distribution.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 68E5B7702016821600C1C764 /* color_distribution.cpp */; };
@@ -27,11 +29,14 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		68288F4B201F31A300E272FD /* strategy_interpreter.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = strategy_interpreter.cpp; sourceTree = "<group>"; };
+		68288F4C201F31A300E272FD /* strategy_interpreter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = strategy_interpreter.h; sourceTree = "<group>"; };
+		68288F4E201F390900E272FD /* running_average.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = running_average.cpp; sourceTree = "<group>"; };
+		68288F4F201F390900E272FD /* running_average.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = running_average.h; sourceTree = "<group>"; };
 		68C7417B200BF43300D3347A /* NonFixedPopulationDynamics */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = NonFixedPopulationDynamics; sourceTree = BUILT_PRODUCTS_DIR; };
 		68C7417E200BF43300D3347A /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
 		68E5B76C20167DD100C1C764 /* poisson_experiment.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = poisson_experiment.cpp; sourceTree = "<group>"; };
 		68E5B76D20167DD100C1C764 /* poisson_experiment.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = poisson_experiment.h; sourceTree = "<group>"; };
-		68E5B76F2016817500C1C764 /* strategies.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = strategies.h; sourceTree = "<group>"; };
 		68E5B7702016821600C1C764 /* color_distribution.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = color_distribution.cpp; sourceTree = "<group>"; };
 		68E5B7712016821600C1C764 /* color_distribution.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = color_distribution.h; sourceTree = "<group>"; };
 		68E5B773201682CA00C1C764 /* statistics_ensemble_populations.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = statistics_ensemble_populations.cpp; sourceTree = "<group>"; };
@@ -70,16 +75,19 @@
 		68C7417D200BF43300D3347A /* NonFixedPopulationDynamics */ = {
 			isa = PBXGroup;
 			children = (
-				68E5B776201683CC00C1C764 /* population.cpp */,
-				68E5B777201683CC00C1C764 /* population.h */,
-				68E5B773201682CA00C1C764 /* statistics_ensemble_populations.cpp */,
-				68E5B774201682CA00C1C764 /* statistics_ensemble_populations.h */,
 				68E5B7702016821600C1C764 /* color_distribution.cpp */,
 				68E5B7712016821600C1C764 /* color_distribution.h */,
+				68C7417E200BF43300D3347A /* main.cpp */,
 				68E5B76C20167DD100C1C764 /* poisson_experiment.cpp */,
 				68E5B76D20167DD100C1C764 /* poisson_experiment.h */,
-				68C7417E200BF43300D3347A /* main.cpp */,
-				68E5B76F2016817500C1C764 /* strategies.h */,
+				68E5B776201683CC00C1C764 /* population.cpp */,
+				68E5B777201683CC00C1C764 /* population.h */,
+				68288F4E201F390900E272FD /* running_average.cpp */,
+				68288F4F201F390900E272FD /* running_average.h */,
+				68E5B773201682CA00C1C764 /* statistics_ensemble_populations.cpp */,
+				68E5B774201682CA00C1C764 /* statistics_ensemble_populations.h */,
+				68288F4B201F31A300E272FD /* strategy_interpreter.cpp */,
+				68288F4C201F31A300E272FD /* strategy_interpreter.h */,
 			);
 			path = NonFixedPopulationDynamics;
 			sourceTree = "<group>";
@@ -143,7 +151,9 @@
 				68E5B778201683CC00C1C764 /* population.cpp in Sources */,
 				68E5B76E20167DD100C1C764 /* poisson_experiment.cpp in Sources */,
 				68E5B7722016821600C1C764 /* color_distribution.cpp in Sources */,
+				68288F4D201F31A300E272FD /* strategy_interpreter.cpp in Sources */,
 				68E5B775201682CA00C1C764 /* statistics_ensemble_populations.cpp in Sources */,
+				68288F50201F390900E272FD /* running_average.cpp in Sources */,
 				68C7417F200BF43300D3347A /* main.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

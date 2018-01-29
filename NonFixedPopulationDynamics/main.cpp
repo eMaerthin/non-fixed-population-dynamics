@@ -5,8 +5,7 @@
 //  Created by Marcin Bodych on 14.01.2018.
 //  Copyright (c) 2018 Marcin Bodych. All rights reserved.
 //
-#include "poisson_experiment.h"
-#include "strategies.h"
+
 #include "statistics_ensemble_populations.h"
 
 int main(int argc, const char * argv[]) {
@@ -20,7 +19,7 @@ int main(int argc, const char * argv[]) {
     //StatisticsEnsemblePopulations statistics =
     //StatisticsEnsemblePopulations(strategy, N0, T, 1, true);
     //statistics.RunSimulation(false);
-    int iterations = 1000;
+    int iterations = 100;
     StatisticsEnsemblePopulations statistics =
     StatisticsEnsemblePopulations(strategy, N0, T, iterations);
     bool print_statistics = true;

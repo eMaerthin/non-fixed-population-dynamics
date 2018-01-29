@@ -13,20 +13,12 @@
 #include <vector>
 
 struct ColorDistribution {
-    int colors_;
-    std::vector<int> color_distribution_;
-    ColorDistribution(int colors, std::vector<int> color_distribution):
-    colors_(colors), color_distribution_(color_distribution){
-    }
-    int GetColors(){
-        return colors_;
-    }
-    int GetNthColor(int i){
-        if(i>color_distribution_.size()){
-            return 0;
-        }
-        return color_distribution_[i];
-    }
+    ColorDistribution(const std::vector<size_t>& color_distribution);
+    const size_t GetNthColor(const size_t i) const noexcept;
+    const std::vector<size_t>& GetColorDistribution() const;
+    const size_t GetColors() const;
+private:
+    std::vector<size_t> color_distribution_;
 };
 
 #endif /* defined(____color_distribution__) */
