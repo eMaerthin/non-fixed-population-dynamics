@@ -13,22 +13,27 @@ nodes(N0), color_exists(N0, true){
     std::iota(nodes.begin(), nodes.end(), 0);
 }
 void Population::PopulateNextGeneration(const size_t Nt){
-    Population new_population = Population(Nt);
-    color_exists.erase(color_exists.begin(), color_exists.end());
+    std::vector<size_t> next_generation_nodes(Nt);
+    color_exists.clear();
     color_exists.resize(colors_, false);
-    std::for_each(new_population.nodes.begin(), new_population.nodes.end(),
+    color_exists.shrink_to_fit();
+    
+    std::for_each(next_generation_nodes.begin(), next_generation_nodes.end(),
                   [this](size_t& individual_state) mutable {
                       size_t color = nodes[rand()%size_];
                       individual_state = color;
                       color_exists[color] = true;
                   });
     size_ = Nt;
-    nodes = new_population.nodes;
+    nodes.reserve(Nt);
+    nodes = next_generation_nodes;
+    nodes.shrink_to_fit();
 }
 void Population::PrintState(const size_t t) const {
     std::cout << t << "\t" << CountColors() << "\n";
 }
-const ColorDistribution Population::ComputeColorDistribution() const {
+std::unique_ptr<ColorDistribution>
+Population::ComputeColorDistribution() const {
     std::vector<size_t> colors(colors_, 0);
     std::for_each(colors.begin(), colors.end(),
                   [this, i = 0](size_t& color) mutable {
@@ -36,11 +41,12 @@ const ColorDistribution Population::ComputeColorDistribution() const {
                   });
     std::sort(colors.begin(), colors.end(), std::greater<size_t>());
     colors.erase(colors.begin()+CountColors(), colors.end());
-    return ColorDistribution(colors);
+    colors.shrink_to_fit();
+    return std::make_unique<ColorDistribution>(colors);
 }
 void Population::PrintCurrentColorsDistribution() const {
     const std::vector<size_t>& color_distribution_vec =
-    ComputeColorDistribution().GetColorDistribution();
+    ComputeColorDistribution()->GetColorDistribution();
     std::cout << color_distribution_vec.size() << " colors:";
     std::for_each(color_distribution_vec.begin(), color_distribution_vec.end(),
                   [](const size_t& current_color){

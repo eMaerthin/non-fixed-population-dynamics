@@ -19,7 +19,7 @@ struct Population {
     Population(const size_t N0);
     void PopulateNextGeneration(const size_t Nt);
     void PrintState(const size_t t) const;
-    const ColorDistribution ComputeColorDistribution() const;
+    std::unique_ptr<ColorDistribution> ComputeColorDistribution() const;
     void PrintCurrentColorsDistribution() const;
     const size_t CountColors() const;
 private:

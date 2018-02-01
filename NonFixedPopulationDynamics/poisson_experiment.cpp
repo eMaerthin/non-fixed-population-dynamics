@@ -10,7 +10,8 @@
 
 PoissonExperiment::PoissonExperiment(const size_t n0, const size_t T,
                                      const Strategy strategy):
-n0_(n0), T_(T), strategy_interpreter_(n0, strategy) {
+n0_(n0), T_(T),
+strategy_interpreter(std::make_unique<StrategyInterpreter>(n0, strategy)) {
     last_n_ = n0;
     state.emplace_back(std::make_pair(static_cast<float>(n0),1));
 }
@@ -27,19 +28,19 @@ void PoissonExperiment::RunExperiment(){
     }
 }
 
-void PoissonExperiment::PrintState(const size_t t, const bool print_details,
+float PoissonExperiment::PrintState(const size_t t, const bool print_details,
                                    const float correction) const {
     std::cout << t << "\t" <<
     std::accumulate(state.begin(), state.end(), 0.0,
                     [](float acc, const std::pair<float, size_t>& l){
                         return static_cast<float>(l.second)*l.first+acc;
                     });
-    std::cout << "\t" <<
-    std::accumulate(state.begin(), state.end(), 0.0,
-                    [](float acc, const std::pair<float, size_t>& l){
-                        return l.first+acc;
-                    })+correction;
-    std::cout << "\t";
+    float ret_val = std::accumulate(state.begin(), state.end(), 0.0,
+                                    [](float acc,
+                                       const std::pair<float, size_t>& l){
+                                        return l.first+acc;
+                                    });
+    std::cout << "\t" << ret_val + correction << "\t";
     
     if(print_details){
         std::vector<std::pair<float, size_t>> filtered_states;
@@ -56,9 +57,10 @@ void PoissonExperiment::PrintState(const size_t t, const bool print_details,
                           std::cout << elem.first << ":" << elem.second << "\t";
                       });
     }
+    return ret_val;
 }
 void PoissonExperiment::IterateExperiment(const size_t t){
-    const size_t n=strategy_interpreter_.ComputePopulationSize(t);
+    const size_t n=strategy_interpreter->ComputePopulationSize(t);
     std::vector<float> generated_values;
     constexpr float std_multiplier = 6.0;
     generated_values.resize(n,0.0); //here we count from 1 to n
@@ -91,8 +93,9 @@ void PoissonExperiment::IterateExperiment(const size_t t){
                     [counter = 1](float acc, float weight) mutable
                     { return acc+weight*static_cast<float>(counter++);});
     //should be n;
-    state.erase(state.begin(), state.end());
+    state.clear();
     state.resize(generated_values.size());
+    state.shrink_to_fit();
     float correction = static_cast<float>(n)/weights_sum;
     std::transform(generated_values.begin(), generated_values.end(),
                    state.begin(),

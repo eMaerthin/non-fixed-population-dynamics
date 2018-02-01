@@ -39,3 +39,7 @@ size_t StrategyInterpreter::ComputePopulationSize(const size_t t) const {
     }
     return n;
 }
+
+const Strategy StrategyInterpreter::GetStrategy() const {
+    return strategy_;
+}

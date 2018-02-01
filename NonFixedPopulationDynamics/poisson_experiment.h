@@ -21,13 +21,13 @@ struct PoissonExperiment{
     PoissonExperiment(const size_t n0, const size_t T, const Strategy strategy);
     static float PoissonPmf(const size_t k, const float lambda);
     void RunExperiment();
-    void PrintState(const size_t t, const bool print_details = false,
+    float PrintState(const size_t t, const bool print_details = false,
                     const float correction = 0.0) const;
     void IterateExperiment(const size_t t);
 private:
     const size_t n0_;
     const size_t T_;
-    const StrategyInterpreter strategy_interpreter_;
+    std::unique_ptr<StrategyInterpreter> strategy_interpreter;
     
     size_t last_n_;
     std::vector<std::pair<float, size_t>> state;

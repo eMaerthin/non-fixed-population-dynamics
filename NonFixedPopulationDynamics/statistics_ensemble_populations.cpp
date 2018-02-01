@@ -13,9 +13,10 @@ StatisticsEnsemblePopulations::StatisticsEnsemblePopulations(
                                 const Strategy strategy, const size_t N0,
                                 const size_t T, const size_t iterations,
                                 const bool print_state):
-N0_(N0), strategy_interpreter_(N0, strategy), T_(T), iterations(iterations),
-current_iteration(0), print_state(print_state),
-experiment_(PoissonExperiment(N0_,T_,strategy)),
+N0_(N0), T_(T), iterations(iterations), current_iteration(0),
+print_state(print_state),
+strategy_interpreter(std::make_unique<StrategyInterpreter>(N0, strategy)),
+experiment(std::make_unique<PoissonExperiment>(N0_,T_,strategy)),
 avg_colors_per_timestamp(T+1, 0.0),
 avg_distribution_per_timestamp(T+1){
     std::for_each(avg_distribution_per_timestamp.begin(),
@@ -47,35 +48,72 @@ void StatisticsEnsemblePopulations::RunSimulation(
     }
 }
 void StatisticsEnsemblePopulations::UpdateStatistics(
-                                                    const Population population,
-                                                    const size_t t){
-    const ColorDistribution color_distribution =
-    population.ComputeColorDistribution();
-    float colors = static_cast<float>(color_distribution.GetColors());
+const std::shared_ptr<Population>& population, const size_t t){
+    std::unique_ptr<ColorDistribution> color_distribution =
+    population->ComputeColorDistribution();
+    float colors = static_cast<float>(color_distribution->GetColors());
     avg_colors_per_timestamp[t]=
     RunningAverage::ComputeAverage(avg_colors_per_timestamp[t],
                                    colors, current_iteration);
     for(size_t i=0; i<N0_; i++){
         avg_distribution_per_timestamp[t][i]=
         RunningAverage::ComputeAverage(avg_distribution_per_timestamp[t][i],
-                                       color_distribution.GetNthColor(i),
+                                       color_distribution->GetNthColor(i),
                                        current_iteration);
     }
+}
+float StatisticsEnsemblePopulations::PrintAnalyticsResult(const size_t t){
+    float partial_res = 1.0;
+    float partial_exp = 0.0;
+    for(size_t t_ = t; t_ >= 1; t_--){
+        partial_exp = expf(
+        -static_cast<float>(strategy_interpreter->ComputePopulationSize(t_))/
+        static_cast<float>(strategy_interpreter->ComputePopulationSize(t_-1))*
+                           partial_res);
+        partial_res = 1.0-partial_exp;
+    }
+    float ret_val = (1.0 - partial_exp ) * N0_;
+    std::cout << ret_val << "\t";
+    return ret_val;
 }
 void StatisticsEnsemblePopulations::PrintStatistics(
 const bool run_poisson_experiment, const bool print_poisson_details,
 const bool print_details) {
+    std::cout << "t\tNt\t";
+    if(run_poisson_experiment){
+        std::cout << "Analytic-Simul\t";
+    }
+    std::cout << "Analytic\t";
+    std::cout << "Simulation\t";
+    std::cout <<"Diff\t";
+    std::cout << std::endl;
+    float analytic_drop_fraction = 0.0;
     for(size_t t=0; t<=T_;t++){
+        float poisson_ret_val = 0.0;
+        if(t>0){
+            analytic_drop_fraction = expf(-1)*expf(analytic_drop_fraction);
+        }
         if(run_poisson_experiment){
             if(t>0){
-                experiment_.IterateExperiment(t);
+                experiment->IterateExperiment(t);
             }
-            experiment_.PrintState(t, print_poisson_details);
+            poisson_ret_val = experiment->PrintState(t, print_poisson_details);
         }
         else{
             std::cout << t << "\t";
+            std::cout << strategy_interpreter->ComputePopulationSize(t) << "\t";
         }
+        ///TODO
+        // Below line should works fine ONLY for Strategy::ConstantPopulation
+        //std::cout << (1.0-analytic_drop_fraction)*N0_ << "\t";
+        float ret_analytic_result = PrintAnalyticsResult(t);
         std::cout << avg_colors_per_timestamp[t];
+        if(run_poisson_experiment){
+            std::cout << "\t" << avg_colors_per_timestamp[t] - poisson_ret_val;
+        }
+        else {
+            std::cout << "\t" << avg_colors_per_timestamp[t] - ret_analytic_result;
+        }
         if(print_details){
             for(size_t i=0; i<N0_; i++){
                 std::cout << "\t" << avg_distribution_per_timestamp[t][i];
@@ -85,16 +123,16 @@ const bool print_details) {
     }
 }
 void StatisticsEnsemblePopulations::RunSingleRun(const bool print_state){
-    Population population = Population(N0_);
+    std::shared_ptr<Population> population(std::make_shared<Population>(N0_));
     if(print_state){
-        population.PrintState(0);
+        population->PrintState(0);
     }
     for(size_t t=1;t<=T_;t++){
-        population.PopulateNextGeneration(strategy_interpreter_
-                                          .ComputePopulationSize(t));
+        population->PopulateNextGeneration(strategy_interpreter->
+                                          ComputePopulationSize(t));
         UpdateStatistics(population, t);
         if(print_state){
-            population.PrintState(t);
+            population->PrintState(t);
         }
     }
 }

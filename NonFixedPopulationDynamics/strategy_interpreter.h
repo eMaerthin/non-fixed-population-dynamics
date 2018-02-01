@@ -21,6 +21,7 @@ struct StrategyInterpreter{
     StrategyInterpreter(const size_t n0, const Strategy strategy);
     StrategyInterpreter(const size_t n0, const FunctionalStrategy function);
     size_t ComputePopulationSize(const size_t t) const;
+    const Strategy GetStrategy() const;
 private:
     const size_t n0_;
     const Strategy strategy_;
