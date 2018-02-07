@@ -19,6 +19,8 @@
 
 struct PoissonExperiment{
     PoissonExperiment(const size_t n0, const size_t T, const Strategy strategy);
+    PoissonExperiment(const size_t n0, const size_t T,
+                      std::shared_ptr<StrategyInterpreter> strategy_interpreter);
     static float PoissonPmf(const size_t k, const float lambda);
     void RunExperiment();
     float PrintState(const size_t t, const bool print_details = false,
@@ -27,7 +29,7 @@ struct PoissonExperiment{
 private:
     const size_t n0_;
     const size_t T_;
-    std::unique_ptr<StrategyInterpreter> strategy_interpreter;
+    std::shared_ptr<StrategyInterpreter> strategy_interpreter_;
     
     size_t last_n_;
     std::vector<std::pair<float, size_t>> state;

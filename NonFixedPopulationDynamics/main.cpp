@@ -12,22 +12,20 @@ int main(int argc, const char * argv[]) {
     
     /* initialize random seed: */
     srand (static_cast<unsigned int>(time(NULL)));
-    int N0 = 5000;
-    int T = 8000;
-    Strategy strategy = Strategy::ConstantPopulation;//  Strategy::ConstantPopulation;// LinearGrowing;
-    //single run case:
-    //StatisticsEnsemblePopulations statistics =
-    //StatisticsEnsemblePopulations(strategy, N0, T, 1, true);
-    //statistics.RunSimulation(false);
-    int iterations = 0;
+    int N0 = 200;
+    int T = 3000;
+    Strategy strategy = Strategy::ExponentialGrowing;//LinearGrowing;
+    int iterations = 100;
+    std::vector<float> parameters(1,1.0);
+    std::shared_ptr<StrategyInterpreter>
+    strategy_interpreter(std::make_shared<StrategyInterpreter>
+                         (N0, strategy, parameters));
     StatisticsEnsemblePopulations statistics =
-    StatisticsEnsemblePopulations(strategy, N0, T, iterations);
+    StatisticsEnsemblePopulations(strategy_interpreter, N0, T, iterations);
     bool print_statistics = true;
     bool run_poisson_experiment = false;
     bool print_details = false;
     statistics.RunSimulation(print_statistics, run_poisson_experiment,
                              print_details);
-    //PoissonExperiment experiment(N0, T, strategy);
-    //experiment.RunExperiment();
     return 0;
 }

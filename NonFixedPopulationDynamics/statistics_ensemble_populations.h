@@ -19,14 +19,15 @@
 #include "strategy_interpreter.h"
 
 struct StatisticsEnsemblePopulations {
-    StatisticsEnsemblePopulations(const Strategy strategy, const size_t N0,
-                                  const size_t T, const size_t iterations,
-                                  const bool print_state=false);
+    StatisticsEnsemblePopulations(
+    std::shared_ptr<StrategyInterpreter> strategy_interpreter, const size_t N0,
+    const size_t T, const size_t iterations, const bool print_state=false);
     void RunSimulation(const bool print_statistics = true,
                        const bool run_poisson_experiment = false,
                        const bool print_details = false);
     void UpdateStatistics(const std::shared_ptr<Population>& population,
                           const size_t t);
+    float ComputePopulationRatio(const size_t t);
     float PrintAnalyticsResult(const size_t t);
     void PrintStatistics(const bool run_poisson_experiment,
                          const bool print_poisson_details,
@@ -40,7 +41,7 @@ private:
     
     size_t current_iteration;
     
-    std::unique_ptr<StrategyInterpreter> strategy_interpreter;
+    std::shared_ptr<StrategyInterpreter> strategy_interpreter_;
     std::unique_ptr<PoissonExperiment> experiment;
     
     std::vector<float> avg_colors_per_timestamp;

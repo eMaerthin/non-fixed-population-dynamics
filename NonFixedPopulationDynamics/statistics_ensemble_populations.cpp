@@ -10,13 +10,11 @@
 #include <chrono>
 #include <iomanip>
 StatisticsEnsemblePopulations::StatisticsEnsemblePopulations(
-                                const Strategy strategy, const size_t N0,
-                                const size_t T, const size_t iterations,
-                                const bool print_state):
-N0_(N0), T_(T), iterations(iterations), current_iteration(0),
-print_state(print_state),
-strategy_interpreter(std::make_unique<StrategyInterpreter>(N0, strategy)),
-experiment(std::make_unique<PoissonExperiment>(N0_,T_,strategy)),
+std::shared_ptr<StrategyInterpreter> strategy_interpreter, const size_t N0,
+const size_t T, const size_t iterations, const bool print_state):
+N0_(N0), T_(T), iterations(iterations), print_state(print_state),
+current_iteration(0), strategy_interpreter_(std::move(strategy_interpreter)),
+experiment(std::make_unique<PoissonExperiment>(N0_,T_,strategy_interpreter)),
 avg_colors_per_timestamp(T+1, 0.0),
 avg_distribution_per_timestamp(T+1){
     std::for_each(avg_distribution_per_timestamp.begin(),
@@ -62,19 +60,20 @@ const std::shared_ptr<Population>& population, const size_t t){
                                        current_iteration);
     }
 }
+float StatisticsEnsemblePopulations::ComputePopulationRatio(const size_t t){
+    return static_cast<float>(strategy_interpreter_->ComputePopulationSize(t))/
+    static_cast<float>(strategy_interpreter_->ComputePopulationSize(t-1));
+}
 float StatisticsEnsemblePopulations::PrintAnalyticsResult(const size_t t){
-    float partial_res = 1.0;
-    float partial_exp = 0.0;
-    for(size_t t_ = t; t_ >= 1; t_--){
-        partial_exp = expf(
-        -static_cast<float>(strategy_interpreter->ComputePopulationSize(t_))/
-        static_cast<float>(strategy_interpreter->ComputePopulationSize(t_-1))*
-                           partial_res);
+    double partial_res = 1.0;
+    double partial_exp = 0.0;
+    for(size_t tick = t; tick >= 1; tick--){
+        partial_exp = exp(-ComputePopulationRatio(tick)*partial_res);
         partial_res = 1.0-partial_exp;
     }
-    float ret_val = (1.0 - partial_exp ) * N0_;
+    double ret_val = std::max(1.0,(1.0 - partial_exp ) * N0_);
     std::cout << ret_val << "\t";
-    return ret_val;
+    return static_cast<float>(ret_val);
 }
 void StatisticsEnsemblePopulations::PrintStatistics(
 const bool run_poisson_experiment, const bool print_poisson_details,
@@ -101,7 +100,7 @@ const bool print_details) {
         }
         else{
             std::cout << t << "\t";
-            std::cout << strategy_interpreter->ComputePopulationSize(t) << "\t";
+            std::cout << strategy_interpreter_->ComputePopulationSize(t) << "\t";
         }
         ///TODO
         // Below line should works fine ONLY for Strategy::ConstantPopulation
@@ -128,7 +127,7 @@ void StatisticsEnsemblePopulations::RunSingleRun(const bool print_state){
         population->PrintState(0);
     }
     for(size_t t=1;t<=T_;t++){
-        population->PopulateNextGeneration(strategy_interpreter->
+        population->PopulateNextGeneration(strategy_interpreter_->
                                           ComputePopulationSize(t));
         UpdateStatistics(population, t);
         if(print_state){
