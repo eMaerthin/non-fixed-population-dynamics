@@ -10,16 +10,17 @@
 #include <chrono>
 #include <iomanip>
 StatisticsEnsemblePopulations::StatisticsEnsemblePopulations(
-std::shared_ptr<StrategyInterpreter> strategy_interpreter, const size_t N0,
+std::shared_ptr<StrategyInterpreter> strategy_interpreter,
 const size_t T, const size_t iterations, const bool print_state):
-N0_(N0), T_(T), iterations(iterations), print_state(print_state),
-current_iteration(0), strategy_interpreter_(std::move(strategy_interpreter)),
-experiment(std::make_unique<PoissonExperiment>(N0_,T_,strategy_interpreter)),
+T_(T), iterations(iterations), print_state(print_state), current_iteration(0),
+strategy_interpreter_(std::move(strategy_interpreter)),
+N0_(strategy_interpreter_->ComputePopulationSize(0)),
+experiment(std::make_unique<PoissonExperiment>(T_,strategy_interpreter)),
 avg_colors_per_timestamp(T+1, 0.0),
 avg_distribution_per_timestamp(T+1){
     std::for_each(avg_distribution_per_timestamp.begin(),
                   avg_distribution_per_timestamp.end(),
-                  [N0](std::vector<float> &v){ v.resize(N0, 0.0); });
+                  [this](std::vector<float> &v){ v.resize(N0_, 0.0); });
     for(size_t i=0;i<N0_;i++){
         avg_distribution_per_timestamp[0][i]=1.0;
     }

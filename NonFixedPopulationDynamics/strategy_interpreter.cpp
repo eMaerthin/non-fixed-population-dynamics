@@ -45,6 +45,7 @@ float StrategyInterpreter::ComputeApproxPopulationSize(const float t) const {
         default:
             throw std::invalid_argument("not handled errror");
     }
+    if (n < 1) n = 1;
     return n;
 }
 size_t StrategyInterpreter::ComputePopulationSize(const size_t t) const {

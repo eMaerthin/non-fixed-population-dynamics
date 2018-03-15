@@ -14,7 +14,7 @@
 #include <stdio.h>
 #include <utility>
 #include <vector>
-using FunctionalStrategy = std::function<size_t(size_t)>;
+using FunctionalStrategy = std::function<float(float)>;
 enum Strategy { QuadraticGrowing, LinearGrowing, ConstantPopulation,
     FunctionalDependency, ExponentialGrowing };
 

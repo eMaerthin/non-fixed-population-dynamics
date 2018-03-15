@@ -10,15 +10,17 @@
 
 PoissonExperiment::PoissonExperiment(const size_t n0, const size_t T,
                                      const Strategy strategy):
-n0_(n0), T_(T),
+T_(T),
 strategy_interpreter_(std::make_unique<StrategyInterpreter>(n0, strategy)),
-last_n_(n0), state(1, std::make_pair(static_cast<float>(n0),1)) {
+n0_(strategy_interpreter_->ComputePopulationSize(0)),
+last_n_(n0_), state(1, std::make_pair(static_cast<float>(n0_),1)) {
 }
 
-PoissonExperiment::PoissonExperiment(const size_t n0, const size_t T,
+PoissonExperiment::PoissonExperiment(const size_t T,
 std::shared_ptr<StrategyInterpreter> strategy_interpreter):
-n0_(n0), T_(T), strategy_interpreter_(strategy_interpreter), last_n_(n0),
-state(1, std::make_pair(static_cast<float>(n0),1)) {
+T_(T), strategy_interpreter_(strategy_interpreter),
+n0_(strategy_interpreter_->ComputePopulationSize(0)), last_n_(n0_),
+state(1, std::make_pair(static_cast<float>(n0_),1)) {
 }
 
 float PoissonExperiment::PoissonPmf(const size_t k, const float lambda) {

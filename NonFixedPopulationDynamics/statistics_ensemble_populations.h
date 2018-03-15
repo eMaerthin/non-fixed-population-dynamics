@@ -20,7 +20,7 @@
 
 struct StatisticsEnsemblePopulations {
     StatisticsEnsemblePopulations(
-    std::shared_ptr<StrategyInterpreter> strategy_interpreter, const size_t N0,
+    std::shared_ptr<StrategyInterpreter> strategy_interpreter,
     const size_t T, const size_t iterations, const bool print_state=false);
     void RunSimulation(const bool print_statistics = true,
                        const bool run_poisson_experiment = false,
@@ -34,7 +34,6 @@ struct StatisticsEnsemblePopulations {
                          const bool print_details);
     void RunSingleRun(const bool print_state = false);
 private:
-    const size_t N0_;
     const size_t T_;
     const size_t iterations;
     const bool print_state;
@@ -42,6 +41,8 @@ private:
     size_t current_iteration;
     
     std::shared_ptr<StrategyInterpreter> strategy_interpreter_;
+    const size_t N0_; //N0 should be calculated using strategy_interpreter!
+    
     std::unique_ptr<PoissonExperiment> experiment;
     
     std::vector<float> avg_colors_per_timestamp;

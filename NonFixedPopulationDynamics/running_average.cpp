@@ -20,6 +20,6 @@ float RunningAverage::UpdateValue(const float new_value){
 float RunningAverage::ComputeAverage(const float current_average,
                                      const float update_value,
                                      const size_t counter){
-    float scale = 1.0 / (counter+1.0);
+    float scale = 1.0 / counter;
     return current_average * (1.0 - scale) + update_value * scale;
 }
